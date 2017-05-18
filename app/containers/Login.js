@@ -28,6 +28,10 @@ class Login extends Component {
     this.props.dispatch(createAction('app/forceUpdateToken')())
   }
 
+  onMenu = () => {
+    this.props.dispatch(createAction('app/getMenuList')({requestType:1}))
+  }
+
   onClose = () => {
     this.props.dispatch(NavigationActions.back())
   }
@@ -46,6 +50,9 @@ class Login extends Component {
         {fetching
           ? <ActivityIndicator />
           : <Button title="UpdateTicket" onPress={this.onForceUpdateToken} />}
+        {fetching
+          ? <ActivityIndicator />
+          : <Button title="UpdateTicket" onPress={this.onMenu} />}
         {!fetching && <Button title="Close" onPress={this.onClose} />}
       </View>
     )

@@ -1,30 +1,23 @@
 /**
  * Created by shi on 2017/5/16.
  */
-import {
-  apiEndPoint,
-  appKey,
-  platform,
-  clientType,
-  uuid,
-  actionGetMenuList,
-  actionGetMeasureFavorites,
-  actionGetMeasureList,
-  actionUpdateMeasureFavorites,
-  actionUpdateUserFeedback,
-} from '../constants/environment';
+import { env } from '../constants/environment';
 import request from '../utils/request';
 
 const head = {
-  Appkey: appKey,
-  Client: platform,
-  ClientType: clientType,
-  UUID: uuid,
+  AppKey: env.appKey,
+  Client: env.platform,
+  ClientType: env.clientType,
+  UUID: env.uuid,
 }
 
-export function getMenuList(user, token) {
-  return request(`${apiEndPoint}?at=${token}`, {
+export function getMenuList({ user, token, type }) {
+  return request(`${env.apiEndPoint}?at=${token}`, {
     method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
     body: JSON.stringify({
       Header: {
         ...head,
@@ -32,19 +25,23 @@ export function getMenuList(user, token) {
         User: user,
       },
       Body: {
-        Action: actionGetMenuList,
+        Action: env.actionGetMenuList,
         ResponseType: 'json',
         RequestParam: {
-          type: 'app',
+          type: (type === env.menuType.kpi) ? 'app_kpi' : 'app_general',
         }
       },
     })
   });
 }
 
-export function getMeasureList(user, token, date, offset) {
-  return request(`${apiEndPoint}?at=${token}`, {
+export function getMeasureList({ user, token, menuId, date, offset }) {
+  return request(`${env.apiEndPoint}?at=${token}`, {
     method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
     body: JSON.stringify({
       Header: {
         ...head,
@@ -52,19 +49,91 @@ export function getMeasureList(user, token, date, offset) {
         User: user,
       },
       Body: {
-        Action: actionGetMenuList,
+        Action: env.actionGetMeasureList,
         ResponseType: 'json',
         RequestParam: {
-          type: 'app',
+          offset: offset,
+          menuId: menuId,
+          limit: env.pageLimit,
+          date: date,
         }
       },
     })
   });
 }
 
-export function patch(id, values) {
-  return request(`/api/users/${id}`, {
-    method: 'PATCH',
-    body: JSON.stringify(values),
+export function getMeasureFavorites({ user, token, date, offset }) {
+  return request(`${env.apiEndPoint}?at=${token}`, {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      Header: {
+        ...head,
+        ST: token,
+        User: user,
+      },
+      Body: {
+        Action: env.actionGetMeasureFavorites,
+        ResponseType: 'json',
+        RequestParam: {
+          offset: offset,
+          limit: env.pageLimit,
+          date: date,
+        }
+      },
+    })
   });
 }
+
+export function updateMeasureFavorite({ user, token, measureId, status }) {
+  return request(`${env.apiEndPoint}?at=${token}`, {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      Header: {
+        ...head,
+        ST: token,
+        User: user,
+      },
+      Body: {
+        Action: env.actionUpdateUserFeedback,
+        ResponseType: 'json',
+        RequestParam: {
+          measureId: measureId,
+          status: status,
+        }
+      },
+    })
+  });
+}
+
+export function updateUserFeedback({ user, token, content }) {
+  return request(`${env.apiEndPoint}?at=${token}`, {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      Header: {
+        ...head,
+        ST: token,
+        User: user,
+      },
+      Body: {
+        Action: env.actionUpdateUserFeedback,
+        ResponseType: 'json',
+        RequestParam: {
+          content: content,
+        }
+      },
+    })
+  });
+}
+

@@ -203,7 +203,7 @@ public class UuapModule extends ReactContextBaseJavaModule {
             else if (o instanceof Token) {
                 WritableMap map = Arguments.createMap();
                 map.putBoolean("status",true);
-                map.putString("ticket", ((Token) o).toString());
+                map.putString("ticket", ((Token) o).getId());
                 map.putString("message", "");
                 mGetTicketPromise.resolve(map);
             }

@@ -19,8 +19,7 @@ export const login = async () => {
 export const getTicket = async () => {
   try {
     const a = await NativeModules.UuapAdapter.getTicket();
-    console.log(a)
-    return {'status': true}
+    return a
   } catch (e) {
     console.error(e);
     return {'status': false}
