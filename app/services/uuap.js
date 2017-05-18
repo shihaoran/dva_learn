@@ -26,11 +26,20 @@ export const getTicket = async () => {
   }
 }
 
+export const getToken = async () => {
+  try {
+    const a = await NativeModules.UuapAdapter.getToken();
+    return a
+  } catch (e) {
+    console.error(e);
+    return {'status': false}
+  }
+}
+
 export const forceUpdateToken = async () => {
   try {
-    console.log('hahaha')
     const a = await NativeModules.UuapAdapter.forceUpdateToken();
-    console.log(a)
+    return a
     return {'status': true}
   } catch (e) {
     console.error(e);

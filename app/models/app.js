@@ -46,26 +46,24 @@ export default {
       }
       catch (e)
       {
-        console.log(e)
+        console.log(e.response)
       }
     },
     *getMenuList({ payload }, { select, call, put }) {
-      const { ticket } = yield call(uuapService.getTicket, payload)
-      console.log(ticket)
+      const { token } = yield call(uuapService.getToken, payload)
       const { app } = yield select(state => state);
       const requestParam = {
         requestType: apiService.getMenuList,
         params: {
           user: app.userName,
-          token: app.token,
+          token: token,
           type: payload.requestType,
         }
       }
-      const data = yield put({
+      yield put({
         type: 'request',
         payload: requestParam,
       });
-      console.log(data)
     },
   },
 }

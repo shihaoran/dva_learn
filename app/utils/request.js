@@ -2,11 +2,9 @@ import fetch from 'dva/fetch';
 
 function checkStatus(response) {
   if (response.status >= 200 && response.status < 300) {
-    return response;
+    return true
   }
-  const error = new Error(response.statusText);
-  error.response = response;
-  throw error;
+  return false
 }
 
 /**
@@ -17,11 +15,14 @@ function checkStatus(response) {
  * @return {object}           An object containing either "data" or "err"
  */
 export default async function request(url, options) {
-  const response = await fetch(url, options);
+  const response = await fetch(url, options)
 
-  checkStatus(response);
-
-  const data = await response.json();
-
-  return data;
+  const status = checkStatus(response)
+  const data = await response.json()
+  if (status) {
+    return data
+  }
+  const error = new Error(data)
+  error.response = data
+  throw error
 }
